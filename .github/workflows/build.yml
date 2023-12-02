@@ -3,7 +3,7 @@ name: Build and Push Docker Image
 on:
   push:
     branches:
-      - master  # Update to your master branch name
+      - main  # Update to your default branch name
 
 jobs:
   build:
@@ -19,8 +19,8 @@ jobs:
       - name: Build and Push Docker Image
         run: |
           IMAGE_NAME="${{ secrets.DOCKERHUB_USERNAME }}/commit-version-website"
-          COMMIT_HASH=$(echo $GITHUB_SHA | cut -c1-7)
+          COMMIT_HASH="$(echo $GITHUB_SHA | cut -c1-7)"
           IMAGE_TAG="${IMAGE_NAME}:${COMMIT_HASH}"
 
-          docker build -t $IMAGE_TAG .
-          docker push $IMAGE_TAG	
+          docker build -t "$IMAGE_TAG" .
+          docker push "$IMAGE_TAG"
