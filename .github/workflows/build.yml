@@ -20,12 +20,12 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: ./Dockerfile.react  # Update with the correct Dockerfile name
+          file: ./Dockerfile.react
           platforms: linux/amd64
           push: true
           tags: |
-            IMAGE_NAME:latest
-            IMAGE_NAME:${{ github.sha }}
+            image_name:latest  # Change to lowercase
+            image_name:${{ github.sha }}
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
