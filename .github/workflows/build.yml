@@ -19,7 +19,6 @@ jobs:
       - name: Login to DockerHub
         run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
 
-        
       - name: Build and Push to Docker Hub
         uses: docker/build-push-action@v2
         with:
@@ -28,8 +27,5 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-            image_name:latest
-            image_name:${{ github.sha }}
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
+            docker.io/${{ secrets.DOCKERHUB_USERNAME }}/simple-reactjs-app:latest
+            docker.io/${{ secrets.DOCKERHUB_USERNAME }}/simple-reactjs-app:${{ github.sha }}
