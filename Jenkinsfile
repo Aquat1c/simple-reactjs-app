@@ -5,8 +5,9 @@ pipeline {
         DOCKER_IMAGE = 'node:14'  // Use the Node.js 14 Docker image
         DOCKERHUB_CREDENTIALS = 'dockerhub_credentials'
         REACT_APP_NAME = 'simple-reactjs-app'
-        REGISTRY = 'sayaquatic'  // Replace with your Docker Hub username or registry URL
-        DOCKERHUB_TOKEN = 'dckr_pat_qncVOzbFw7DEP3WS66Gu28npByQ'  // Replace with your Docker Hub token
+        REGISTRY = 'sayaquatic'
+        DOCKERHUB_TOKEN = credentials('dockerhub_credentials')
+        DOCKER_IMAGE_NAME = "${REGISTRY}/${REACT_APP_NAME}"
     }
 
     stages {
@@ -28,18 +29,17 @@ pipeline {
             }
         }
 
-       stage('Push to DockerHub') {
-    steps {
-        script {
-            // Push Docker image to DockerHub using withDockerRegistry
-            withDockerRegistry(credentialsId: DOCKERHUB_CREDENTIALS, url: 'https://registry.hub.docker.com') {
-                sh "docker login -u ${registry} --password-stdin ${DOCKERHUB_TOKEN}"
-                sh "docker push ${dockerImage}"
+        stage('Push to DockerHub') {
+            steps {
+                script {
+                    // Push Docker image to DockerHub using credentials
+                    withDockerRegistry([credentialsId: DOCKERHUB_CREDENTIALS, url: 'https://registry.hub.docker.com']) {
+                        sh "docker login -u ${REGISTRY} --password-stdin ${DOCKERHUB_TOKEN}"
+                        sh "docker push ${DOCKER_IMAGE_NAME}"
+                    }
+                }
             }
         }
-    }
-}
-
 
         stage('Deploy') {
             steps {
