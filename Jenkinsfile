@@ -5,6 +5,8 @@ pipeline {
         DOCKER_IMAGE = 'node:14'  // Use the Node.js 14 Docker image
         DOCKERHUB_CREDENTIALS = 'dockerhub_credentials'
         REACT_APP_NAME = 'simple-reactjs-app'
+        REGISTRY = 'your_registry_username'  // Replace with your Docker Hub username or registry URL
+        DOCKERHUB_TOKEN = 'your_dockerhub_token'  // Replace with your Docker Hub token
     }
 
     stages {
@@ -26,13 +28,13 @@ pipeline {
             }
         }
 
-        stage('Dockerize') {
+        stage('Push to DockerHub') {
             steps {
                 script {
-                    // Build Docker image
-                    docker.withRegistry('https://registry.hub.docker.com', DOCKERHUB_CREDENTIALS) {
-                        def customImage = docker.build("aquatic/${REACT_APP_NAME}:${env.BUILD_NUMBER}")
-                        customImage.push()
+                    // Push Docker image to DockerHub using withDockerRegistry
+                    withDockerRegistry(credentialsId: DOCKERHUB_CREDENTIALS, url: 'https://registry.hub.docker.com') {
+                        sh "docker build -t ${REGISTRY}/${REACT_APP_NAME}:${env.BUILD_NUMBER} ."
+                        sh "docker push ${REGISTRY}/${REACT_APP_NAME}:${env.BUILD_NUMBER}"
                     }
                 }
             }
@@ -41,9 +43,9 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    // Redeploy or rebuild your application as needed
-                    // For example, restart a Docker container with the new image
-                    sh 'docker-compose -f docker-compose.prod.yml up -d --build'
+                    // Rebuild and redeploy Docker containers
+                    sh 'docker-compose down'
+                    sh 'docker-compose up -d --build'
                 }
             }
         }
