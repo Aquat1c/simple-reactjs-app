@@ -1,0 +1,58 @@
+0pipeline {
+    agent any
+
+    environment {
+        DOCKER_IMAGE = 'node:14'  // Use the Node.js 14 Docker image
+        DOCKERHUB_CREDENTIALS = 'dockerhub_credentials'
+        REACT_APP_NAME = 'simple-reactjs-app'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                script {
+                    checkout scm
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                script {
+                    // Install dependencies and build the React app
+                    sh 'npm install'
+                    sh 'npm run build'
+                }
+            }
+        }
+
+        stage('Dockerize') {
+            steps {
+                script {
+                    // Build Docker image
+                    docker.withRegistry('https://registry.hub.docker.com', DOCKERHUB_CREDENTIALS) {
+                        def customImage = docker.build("aquatic/${REACT_APP_NAME}:${env.BUILD_NUMBER}")
+                        customImage.push()
+                    }
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                script {
+                    // Redeploy or rebuild your application as needed
+                    // For example, restart a Docker container with the new image
+                    sh 'docker-compose -f docker-compose.prod.yml up -d --build'
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            // Cleanup workspace
+            cleanWs()
+        }
+    }
+}
