@@ -12,7 +12,9 @@ services:
 
   nginx:
     image: nginx:alpine
+     volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
     ports:
-      - "9997:80"
+      - "9996:80"
     depends_on:
       - react-app
