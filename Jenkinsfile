@@ -2,12 +2,12 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'node:14'  // Use the Node.js 14 Docker image
-        DOCKERHUB_CREDENTIALS = 'dockerhub_credentials'
-        REACT_APP_NAME = 'simple-reactjs-app'
-        REGISTRY = 'sayaquatic'
-        DOCKERHUB_TOKEN = credentials('dockerhub_credentials')
-        DOCKER_IMAGE_NAME = "${REGISTRY}/${REACT_APP_NAME}"
+                registry = 'aquatic'
+        imageName = 'simple-reactjs-app'
+        dockerImage = "${registry}/${imageName}"
+        dockerhubToken = 'dckr_pat_ZGWUk_vd34gCFNEiCNZrsBxPOzA'
+
+
     }
 
     stages {
@@ -36,9 +36,8 @@ pipeline {
             steps {
                 script {
                     // Push Docker image to DockerHub using credentials
-                    withDockerRegistry([credentialsId: DOCKERHUB_CREDENTIALS, url: 'https://registry.hub.docker.com']) {
-                        sh "docker login -u ${REGISTRY} -p ${DOCKERHUB_TOKEN}"
-                        sh "docker push ${DOCKER_IMAGE_NAME}"
+                  sh "docker login -u ${registry} -p ${dockerhubToken}"
+                    sh "docker push ${dockerImage}"
                     }
                 }
             }
