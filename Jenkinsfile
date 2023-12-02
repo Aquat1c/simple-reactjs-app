@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        registry = 'aquatic'
+        registry = 'sayaquatic'
         imageName = 'simple-reactjs-app'
         dockerImage = "${registry}/${imageName}"
         dockerhubToken = 'dckr_pat_ZGWUk_vd34gCFNEiCNZrsBxPOzA'
