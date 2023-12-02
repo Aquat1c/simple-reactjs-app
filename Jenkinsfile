@@ -26,14 +26,12 @@ pipeline {
             }
         }
 
-        stage('Dockerize') {
+     stage('Push to DockerHub') {
             steps {
                 script {
-                    // Build Docker image
-                    docker.withRegistry('https://registry.hub.docker.com', DOCKERHUB_CREDENTIALS) {
-                        def customImage = docker.build("aquatic/${REACT_APP_NAME}:${env.BUILD_NUMBER}")
-                        customImage.push()
-                    }
+                    // Push Docker image to DockerHub
+                    sh "docker login -u ${registry} -p ${dockerhubToken}"
+                    sh "docker push ${dockerImage}"
                 }
             }
         }
@@ -41,13 +39,11 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    // Redeploy or rebuild your application as needed
-                    // For example, restart a Docker container with the new image
-                    sh 'docker-compose -f docker-compose.prod.yml up -d --build'
+                    // Rebuild and redeploy Docker containers
+                    sh 'docker-compose down'
+                    sh 'docker-compose up -d --build'
                 }
-            }
         }
-    }
 
     post {
         always {
