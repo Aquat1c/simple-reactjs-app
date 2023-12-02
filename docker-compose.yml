@@ -15,6 +15,6 @@ services:
   nginx:
     image: nginx:alpine  # Use the official Nginx image from Docker Hub
     ports:
-      - "80:80"
+      - "9998:80"
     depends_on:
       - react-app
