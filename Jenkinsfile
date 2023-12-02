@@ -25,9 +25,7 @@ pipeline {
                     sh 'npm run build'
 
                     // Build Docker image with the specified tag
-=
-            sh "docker build -t ${dockerImage} -f Dockerfile.react ."
-
+                    sh "docker build -t ${dockerImage} -f Dockerfile.react ."
                 }
             }
         }
