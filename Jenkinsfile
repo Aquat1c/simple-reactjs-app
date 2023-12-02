@@ -5,8 +5,8 @@ pipeline {
         DOCKER_IMAGE = 'node:14'  // Use the Node.js 14 Docker image
         DOCKERHUB_CREDENTIALS = 'dockerhub_credentials'
         REACT_APP_NAME = 'simple-reactjs-app'
-        REGISTRY = 'your_registry_username'  // Replace with your Docker Hub username or registry URL
-        DOCKERHUB_TOKEN = 'your_dockerhub_token'  // Replace with your Docker Hub token
+        REGISTRY = 'sayaquatic'  // Replace with your Docker Hub username or registry URL
+        DOCKERHUB_TOKEN = 'dckr_pat_qncVOzbFw7DEP3WS66Gu28npByQ'  // Replace with your Docker Hub token
     }
 
     stages {
