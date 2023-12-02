@@ -34,7 +34,7 @@ pipeline {
                 script {
                     // Push Docker image to DockerHub using credentials
                     withDockerRegistry([credentialsId: DOCKERHUB_CREDENTIALS, url: 'https://registry.hub.docker.com']) {
-                        sh "docker login -u ${REGISTRY} --p ${DOCKERHUB_TOKEN}"
+                        sh "docker login -u ${REGISTRY} -p ${DOCKERHUB_TOKEN}"
                         sh "docker push ${DOCKER_IMAGE_NAME}"
                     }
                 }
