@@ -13,6 +13,6 @@ services:
   nginx:
     image: nginx:alpine
     ports:
-      - "80:80"
+      - "9997:80"
     depends_on:
       - react-app
