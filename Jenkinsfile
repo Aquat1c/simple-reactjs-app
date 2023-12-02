@@ -6,7 +6,6 @@ pipeline {
         DOCKERHUB_CREDENTIALS = 'dockerhub_credentials'
         REACT_APP_NAME = 'simple-reactjs-app'
         REGISTRY = 'sayaquatic'
-        DOCKERHUB_TOKEN = credentials('dockerhub_credentials')
         DOCKER_IMAGE_NAME = "${REGISTRY}/${REACT_APP_NAME}"
     }
 
@@ -33,8 +32,8 @@ pipeline {
             steps {
                 script {
                     // Push Docker image to DockerHub using credentials
-                    withDockerRegistry([credentialsId: DOCKERHUB_CREDENTIALS, url: 'https://registry.hub.docker.com']) {
-                        sh "docker login -u ${REGISTRY} --password"
+                    withCredentials([usernamePassword(credentialsId: DOCKERHUB_CREDENTIALS, passwordVariable: 'DOCKERHUB_TOKEN', usernameVariable: 'REGISTRY')]) {
+                        sh "docker login -u ${REGISTRY} -p ${DOCKERHUB_TOKEN}"
                         sh "docker push ${DOCKER_IMAGE_NAME}"
                     }
                 }
