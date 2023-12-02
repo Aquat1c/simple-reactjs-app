@@ -2,9 +2,10 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'node:14'  // Use the Node.js 14 Docker image
-        DOCKERHUB_CREDENTIALS = 'dockerhub_credentials'
-        REACT_APP_NAME = 'simple-reactjs-app'
+        registry = 'sayaquatic'
+        imageName = 'simple-reactjs-app'
+        dockerImage = "${registry}/${imageName}"
+        dockerhubToken = 'dckr_pat_ZGWUk_vd34gCFNEiCNZrsBxPOzA'
     }
 
     stages {
@@ -22,14 +23,17 @@ pipeline {
                     // Install dependencies and build the React app
                     sh 'npm install'
                     sh 'npm run build'
+
+                    // Build Docker image with the specified tag
+                    sh "docker build -t ${dockerImage} -f Dockerfile.react ."
                 }
             }
         }
 
-     stage('Push to DockerHub') {
+        stage('Push to DockerHub') {
             steps {
                 script {
-                    // Push Docker image to DockerHub
+                    // Push Docker image to DockerHub using credentials
                     sh "docker login -u ${registry} -p ${dockerhubToken}"
                     sh "docker push ${dockerImage}"
                 }
@@ -43,7 +47,9 @@ pipeline {
                     sh 'docker-compose down'
                     sh 'docker-compose up -d --build'
                 }
+            }
         }
+    }
 
     post {
         always {

@@ -1,0 +1,17 @@
+# Use an official Node runtime as a parent image
+FROM node:14-alpine
+
+# Set the working directory in the container
+WORKDIR /var/www/html
+
+# Copy the local source files to the container
+COPY . .
+
+# Install dependencies
+RUN npm install
+
+# Expose port 3000 to the Docker host, so it can be accessed from outside the container
+EXPOSE 3000
+
+# Command to run the React app
+CMD ["npm", "start"]
