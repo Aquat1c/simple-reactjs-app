@@ -6,6 +6,7 @@ pipeline {
         DOCKERHUB_CREDENTIALS = 'dockerhub_credentials'
         REACT_APP_NAME = 'simple-reactjs-app'
         REGISTRY = 'sayaquatic'
+        DOCKERHUB_TOKEN = credentials('dockerhub_credentials')
         DOCKER_IMAGE_NAME = "${REGISTRY}/${REACT_APP_NAME}"
     }
 
@@ -24,6 +25,9 @@ pipeline {
                     // Install dependencies and build the React app
                     sh 'npm install'
                     sh 'npm run build'
+
+                    // Build Docker image with the specified tag
+                    sh "docker build -t ${DOCKER_IMAGE_NAME} ."
                 }
             }
         }
@@ -32,7 +36,7 @@ pipeline {
             steps {
                 script {
                     // Push Docker image to DockerHub using credentials
-                    withCredentials([usernamePassword(credentialsId: DOCKERHUB_CREDENTIALS, passwordVariable: 'DOCKERHUB_TOKEN', usernameVariable: 'REGISTRY')]) {
+                    withDockerRegistry([credentialsId: DOCKERHUB_CREDENTIALS, url: 'https://registry.hub.docker.com']) {
                         sh "docker login -u ${REGISTRY} -p ${DOCKERHUB_TOKEN}"
                         sh "docker push ${DOCKER_IMAGE_NAME}"
                     }
