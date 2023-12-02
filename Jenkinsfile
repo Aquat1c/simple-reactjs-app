@@ -2,12 +2,10 @@ pipeline {
     agent any
 
     environment {
-                registry = 'aquatic'
+        registry = 'aquatic'
         imageName = 'simple-reactjs-app'
         dockerImage = "${registry}/${imageName}"
         dockerhubToken = 'dckr_pat_ZGWUk_vd34gCFNEiCNZrsBxPOzA'
-
-
     }
 
     stages {
@@ -27,7 +25,7 @@ pipeline {
                     sh 'npm run build'
 
                     // Build Docker image with the specified tag
-                    sh "docker build -t ${DOCKER_IMAGE_NAME} ."
+                    sh "docker build -t ${dockerImage} ."
                 }
             }
         }
@@ -36,9 +34,8 @@ pipeline {
             steps {
                 script {
                     // Push Docker image to DockerHub using credentials
-                  sh "docker login -u ${registry} -p ${dockerhubToken}"
+                    sh "docker login -u ${registry} -p ${dockerhubToken}"
                     sh "docker push ${dockerImage}"
-                    }
                 }
             }
         }
@@ -60,5 +57,4 @@ pipeline {
             cleanWs()
         }
     }
-}
 }
