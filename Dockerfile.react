@@ -2,7 +2,7 @@
 FROM node:14-alpine
 
 # Set the working directory in the container
-WORKDIR /app
+WORKDIR /var/www/html
 
 # Copy the local source files to the container
 COPY . .
