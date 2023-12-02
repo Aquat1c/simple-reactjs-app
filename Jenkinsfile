@@ -28,18 +28,18 @@ pipeline {
             }
         }
 
-        stage('Push to DockerHub') {
-            steps {
-                script {
-                    // Push Docker image to DockerHub using withDockerRegistry
-                    withDockerRegistry(credentialsId: DOCKERHUB_CREDENTIALS, url: 'https://registry.hub.docker.com') {
-                        bat "docker push devopsglobalmedia/teamcitydocker:build"
-                        sh "docker build -t ${REGISTRY}/${REACT_APP_NAME}:${env.BUILD_NUMBER} ."
-                        sh "docker push ${REGISTRY}/${REACT_APP_NAME}:${env.BUILD_NUMBER}"
-                    }
-                }
+       stage('Push to DockerHub') {
+    steps {
+        script {
+            // Push Docker image to DockerHub using withDockerRegistry
+            withDockerRegistry(credentialsId: DOCKERHUB_CREDENTIALS, url: 'https://registry.hub.docker.com') {
+                sh "docker login -u ${registry} -p ${dockerhubToken}"
+                sh "docker push ${dockerImage}"
             }
         }
+    }
+}
+
 
         stage('Deploy') {
             steps {
